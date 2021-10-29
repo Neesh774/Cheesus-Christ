@@ -15,7 +15,6 @@ module.exports = class PrefixCommand extends Command {
     const prefix = message.client.db.settings.selectPrefix.pluck().get(message.guild.id); // Get prefix
     const embed = new MessageEmbed()
       .setTitle('Cheesus Christ\'s Prefix')
-      .setThumbnail('https://raw.githubusercontent.com/Neesh774/Cheesus-Christ/develop/data/images/Cheesus-Christ.png')
       .addField('Prefix', `\`${prefix}\``, true)
       .addField('Example', `\`${prefix}ping\``, true)
       .setFooter(message.member.displayName,  message.author.displayAvatarURL({ dynamic: true }))

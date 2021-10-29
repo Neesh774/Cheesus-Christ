@@ -26,7 +26,6 @@ module.exports = class BlastCommand extends Command {
       ) {
         const embed = new MessageEmbed()
           .setTitle('Cheesus Christ System Message')
-          .setThumbnail('https://raw.githubusercontent.com/Neesh774/Cheesus-Christ/develop/data/images/Cheesus-Christ.png')
           .setDescription(msg)
           .setTimestamp()
           .setColor(message.guild.me.displayHexColor);

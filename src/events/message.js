@@ -1,9 +1,16 @@
 const { MessageEmbed } = require('discord.js');
 const { oneLine } = require('common-tags');
+const sortUser = require("../utils/sortUser");
+const { sortingChannelId } = require("../../config.json");
 
 module.exports = (client, message) => {
   if (message.channel.type === 'dm' || !message.channel.viewable || message.author.bot) return;
 
+  const valid = new RegExp(/[sS]ort me 🧀/g);
+  if (valid.test(message.content) && message.channel.id === sortingChannelId){
+    console.log("tested");
+    return sortUser(message);
+  }
   // Get disabled commands
   let disabledCommands = client.db.settings.selectDisabledCommands.pluck().get(message.guild.id) || [];
   if (typeof(disabledCommands) === 'string') disabledCommands = disabledCommands.split(' ');
@@ -58,13 +65,8 @@ module.exports = (client, message) => {
     ) {
       const embed = new MessageEmbed()
         .setTitle('Hi, I\'m Cheesus Christ. Need help?')
-        .setThumbnail('https://raw.githubusercontent.com/Neesh774/Cheesus-Christ/develop/data/images/Cheesus-Christ.png')
         .setDescription(`You can see everything I can do by using the \`${prefix}help\` command.`)
-        .addField('Invite Me', oneLine`
-          You can add me to your server by clicking 
-          [here](https://discordapp.com/oauth2/authorize?client_id=416451977380364288&scope=bot&permissions=403008599)!
-        `)
-        .setFooter('DM Neesh#8880 to speak directly with the developer!')
+        .setFooter('DM Neesh#7740 to speak directly with the developer!')
         .setColor(message.guild.me.displayHexColor);
       message.channel.send(embed);
     }

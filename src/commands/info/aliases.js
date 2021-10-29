@@ -54,7 +54,6 @@ module.exports = class AliasesCommand extends Command {
 
       embed
         .setTitle(`Alias Type: \`${capitalize(type)}\``)
-        .setThumbnail('https://raw.githubusercontent.com/Neesh774/Cheesus-Christ/develop/data/images/Cheesus-Christ.png')
         .addField(
           `**${emojiMap[type]} [${aliases[type].reduce((a, b) => a + b.split(' ').slice(1).length, 0)}]**`, 
           aliases[type].join('\n')
@@ -81,7 +80,6 @@ module.exports = class AliasesCommand extends Command {
           **Prefix:** \`${prefix}\`
           **More Information:** \`${prefix}aliases [command type]\`
         `)
-        .setImage('https://raw.githubusercontent.com/Neesh774/Cheesus-Christ/develop/data/images/Cheesus Christ_Title.png')
         .setFooter(message.member.displayName, message.author.displayAvatarURL({ dynamic: true }))
         .setTimestamp()
         .setColor(message.guild.me.displayHexColor);
@@ -95,12 +93,6 @@ module.exports = class AliasesCommand extends Command {
             true
           );
       }
-
-      embed.addField(
-        '**Links**', 
-        '**[Invite Me](https://discordapp.com/oauth2/authorize?client_id=416451977380364288&scope=bot&permissions=403008599) | ' +
-        '[Repository](https://github.com/Neesh774/Cheesus-Christ)**'
-      );
 
     }
 
