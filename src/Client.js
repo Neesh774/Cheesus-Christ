@@ -43,7 +43,7 @@ class Client extends Discord.Client {
       MOD: 'mod',
       ADMIN: 'admin',
       OWNER: 'owner',
-      REACTIONROLES: 'reactionroles'
+      REACTIONROLES: 'reaction Roles'
     };
 
     /** 

@@ -32,7 +32,7 @@ module.exports = class SetAdminRoleCommand extends Command {
     const emojiID = emoji.startsWith('<') ? emoji.match(/\d+/g).join('') : emoji;
     const emojiObj = emojiID.length === 2? emojiID : await message.guild.emojis.cache.get(emojiID);
     if (!emojiObj) return this.sendErrorMessage(message, 0, 'Please provide a valid emoji.');
-    const emojiToString = emojiObj.id.length === 2? emojiObj : emojiObj.toString();
+    const emojiToString = emojiObj.length === 2? emojiObj : emojiObj.toString();
 
     const embed = new MessageEmbed()
       .setTitle('Reaction Role')
@@ -51,15 +51,16 @@ module.exports = class SetAdminRoleCommand extends Command {
       reactionRoles = [];
     }
 
+    const reactionID = msg.react(emojiObj);
     const reactionRole = {
       message: msg.id,
       channel: channel.id,
       role: role.id,
-      emoji: emojiID
+      emoji: emojiID,
+      reaction: reactionID
     };
     reactionRoles.push(reactionRole);
     message.client.db.settings.updateReactionRoles.run(JSON.stringify(reactionRoles), message.guild.id);
-    msg.react(emojiObj);
     embed.addFields(
       [
         {
