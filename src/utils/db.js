@@ -52,7 +52,8 @@ db.prepare(`
     crown_message TEXT DEFAULT "?member has won ?role this week! Points have been reset, better luck next time!",
     crown_schedule TEXT DEFAULT "0 21 * * 5",
     cheese_rate TEXT DEFAULT 2,
-    cheese_ignore_channels TEXT
+    cheese_ignore_channels TEXT,
+    reaction_roles TEXT
   );
 `).run();
 
@@ -135,6 +136,9 @@ const settings = {
   `),
   selectCheeseRate: db.prepare('SELECT cheese_rate FROM settings WHERE guild_id = ?;'),
   selectCheeseIgnoreChannels: db.prepare('SELECT cheese_ignore_channels FROM settings WHERE guild_id = ?;'),
+  selectReactionRoles: db.prepare(`
+    SELECT reaction_roles FROM settings WHERE guild_id = ?;
+  `),
 
   // Updates
   updatePrefix: db.prepare('UPDATE settings SET prefix = ? WHERE guild_id = ?;'),
@@ -173,6 +177,7 @@ const settings = {
   updateCrownSchedule: db.prepare('UPDATE settings SET crown_schedule = ? WHERE guild_id = ?;'),
   updateCheeseRate: db.prepare('UPDATE settings SET cheese_rate = ? WHERE guild_id = ?;'),
   updateCheeseIgnoreChannels: db.prepare('UPDATE settings SET cheese_ignore_channels = ? WHERE guild_id = ?;'),
+  updateReactionRoles: db.prepare('UPDATE settings SET reaction_roles = ? WHERE guild_id = ?;'),
   deleteGuild: db.prepare('DELETE FROM settings WHERE guild_id = ?;')
 };
 
