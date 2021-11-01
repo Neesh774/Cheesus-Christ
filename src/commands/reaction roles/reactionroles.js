@@ -50,7 +50,6 @@ module.exports = class SetAdminRoleCommand extends Command {
       }
       return message.channel.send(embed);
     }
-
     const fields = reactionRoles.map((reactionRole, i) => {
       const role = message.guild.roles.cache.get(reactionRole.role);
       const emoji = reactionRole.emoji.length === 2? reactionRole.emoji : message.guild.emojis.cache.get(reactionRole.emoji);

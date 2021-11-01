@@ -41,9 +41,9 @@ module.exports = class SetAdminRoleCommand extends Command {
       .setColor(message.guild.me.displayHexColor);
 
     if(reactionRoles) {
-      const reactionRole = reactionRoles.find(rr => rr.message === msg.id && rr.role === role.id);
+      const reactionRole = reactionRoles.find(rr => rr.message === msg.id && (rr.role === role.id || rr.emoji === emojiID));
       if(reactionRole) {
-        embed.setDescription('There\'s another reaction role on this message with the same role.');
+        embed.setDescription('There\'s another reaction role on this message with the same role or emoji.');
         embed.addField('Jump to Message', `[Click](${msg.url})`);
         return message.channel.send(embed);
       }
@@ -51,13 +51,12 @@ module.exports = class SetAdminRoleCommand extends Command {
       reactionRoles = [];
     }
 
-    const reactionID = msg.react(emojiObj);
+    msg.react(emojiObj);
     const reactionRole = {
       message: msg.id,
       channel: channel.id,
       role: role.id,
       emoji: emojiID,
-      reaction: reactionID
     };
     reactionRoles.push(reactionRole);
     message.client.db.settings.updateReactionRoles.run(JSON.stringify(reactionRoles), message.guild.id);
