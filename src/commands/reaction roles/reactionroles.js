@@ -14,55 +14,48 @@ module.exports = class SetAdminRoleCommand extends Command {
       examples: ['reactionroles #general']
     });
   }
-  async run(message, args) {
+  run(message, args) {
     const reactionRoles = JSON.parse(message.client.db.settings.selectReactionRoles.pluck().get(message.guild.id));
     const embed = new MessageEmbed()
       .setTitle('Reaction Roles')
       .setFooter(message.member.displayName,  message.author.displayAvatarURL({ dynamic: true }))
       .setTimestamp()
       .setColor(message.guild.me.displayHexColor);
-    if (reactionRoles.length === 0) {
+    if (!reactionRoles) {
       embed.setDescription('None');
       return message.channel.send(embed);
     }
+    let channel;
     if(args[0]) {
-      const channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[0]);
-      if(!channel) return this.sendErrorMessage(message, 0, args[0]);
-      const channelReactionRoles = reactionRoles.filter(reactionRole => reactionRole.channel === channel.id);
-      const fields = await channelReactionRoles.map(async (reactionRole, i) => {
+      channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[0]);
+      if(!channel) return this.sendErrorMessage(message, 0, 'Enter a valid channel mention or ID');
+      embed.setTitle(`Reaction Roles in ${channel.name}`);
+    }
+    const entries = Object.entries(reactionRoles);
+    let fields = [];
+    let reactionRoleIndex = 1;
+    for(let i = 0;i < entries.length;i++) {
+      const reactionRoleMessage = entries[i];
+      if(channel) {
+        if(reactionRoleMessage[0].split('-')[1] !== channel.id) continue;
+      }
+      const channelID = reactionRoleMessage[0].split('-')[1];
+      const messageID = reactionRoleMessage[0].split('-')[0];
+      let reactionRoleText = reactionRoleMessage[1].reactions.map(reactionRole => {
         const role = message.guild.roles.cache.get(reactionRole.role);
         const emoji = reactionRole.emoji.length === 2? reactionRole.emoji : message.guild.emojis.cache.get(reactionRole.emoji);
-        const message = await channel.messages.fetch(reactionRole.message);
-        return {
-          name: `${i + 1} | ${role.toString()}`,
-          value: `${emoji} [Jump to Message](${message.url})`
-        };
-      });
-
-      if(channelReactionRoles.length === 0) {
-        embed.setDescription(`None in ${channel.toString()}`);
-        return message.channel.send(embed);
-      }
-      if(channelReactionRoles.length > 10) {
-        new ReactionMenu(message.client, message.channel, message.member, embed, fields, 10);
-      } else {
-        embed.addFields(fields);
-      }
+        return `${reactionRoleIndex++} ${emoji} **|** ${role.toString()}`;
+      }).join('\n');
+      reactionRoleText = `[Click to Jump to Message](https://discord.com/channels/${message.guild.id}/${channelID}/${messageID})\n` + reactionRoleText;
+      fields.push(reactionRoleText);
+    }
+    if(fields.length === 0) {
+      embed.setDescription(`None found${channel ? ` in ${channel.toString()}`: ''}`);
       return message.channel.send(embed);
     }
-    const fields = reactionRoles.map((reactionRole, i) => {
-      const role = message.guild.roles.cache.get(reactionRole.role);
-      const emoji = reactionRole.emoji.length === 2? reactionRole.emoji : message.guild.emojis.cache.get(reactionRole.emoji);
-      return {
-        name: `${i + 1} ${emoji}`,
-        value: `${role.toString()} | [Jump!](https://discord.com/channels/${message.guild.id}/${reactionRole.channel}/${reactionRole.message})`
-      };
-    });
-    if(reactionRoles.length > 10) {
-      new ReactionMenu(message.client, message.channel, message.member, embed, fields, 10);
-    } else {
-      embed.addFields(fields);
-      return message.channel.send(embed);
-    }
+    console.log(fields);
+    embed.setAuthor('Click on the roles to jump to the message!');
+    embed.setFooter('Expires after two minutes.\n' + message.member.displayName,  message.author.displayAvatarURL({ dynamic: true }));
+    new ReactionMenu(message.client, message.channel, message.member, embed, fields, 1);
   }
 };
