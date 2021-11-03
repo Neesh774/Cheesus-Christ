@@ -268,18 +268,18 @@ class Command {
 
     // Name
     if (typeof options.name !== 'string') throw new TypeError('Command name is not a string');
-    if (options.name !== options.name.toLowerCase()) throw new Error('Command name is not lowercase');
+    if (options.name !== options.name.toLowerCase()) throw new Error(`Command name is not lowercase: '${options.name}'`);
 
     // Aliases
     if (options.aliases) {
       if (!Array.isArray(options.aliases) || options.aliases.some(ali => typeof ali !== 'string'))
-        throw new TypeError('Command aliases is not an Array of strings');
+        throw new TypeError(`Command aliases is not an Array of strings: '${options.name}'`);
 
       if (options.aliases.some(ali => ali !== ali.toLowerCase()))
-        throw new RangeError('Command aliases are not lowercase');
+        throw new RangeError(`Command aliases are not lowercase: '${options.name}`);
 
       for (const alias of options.aliases) {
-        if (client.aliases.get(alias)) throw new Error('Command alias already exists');
+        if (client.aliases.get(alias)) throw new Error(`Command alias already exists: '${alias}' | '${options.name}`);
       }
     }
 
@@ -291,9 +291,9 @@ class Command {
       throw new TypeError('Command description is not a string');
     
     // Type
-    if (options.type && typeof options.type !== 'string') throw new TypeError('Command type is not a string');
+    if (options.type && typeof options.type !== 'string') throw new TypeError(`Command type is not a string: '${options.name}`);
     if (options.type && !Object.values(client.types).includes(options.type))
-      throw new Error('Command type is not valid');
+      throw new Error(`Command type is not valid: ${options.name}`);
     
     // Client permissions
     if (options.clientPermissions) {
@@ -301,31 +301,31 @@ class Command {
         throw new TypeError('Command clientPermissions is not an Array of permission key strings');
       
       for (const perm of options.clientPermissions) {
-        if (!permissions[perm]) throw new RangeError(`Invalid command clientPermission: ${perm}`);
+        if (!permissions[perm]) throw new RangeError(`Invalid command clientPermission: '${perm}' | '${options.name}`);
       }
     }
 
     // User permissions
     if (options.userPermissions) {
       if (!Array.isArray(options.userPermissions))
-        throw new TypeError('Command userPermissions is not an Array of permission key strings');
+        throw new TypeError(`Command userPermissions is not an Array of permission key strings: '${options.name}`);
 
       for (const perm of options.userPermissions) {
-        if (!permissions[perm]) throw new RangeError(`Invalid command userPermission: ${perm}`);
+        if (!permissions[perm]) throw new RangeError(`Invalid command userPermission: '${perm}' | ${options.name}`);
       }
     }
 
     // Examples
     if (options.examples && !Array.isArray(options.examples))
-      throw new TypeError('Command examples is not an Array of permission key strings');
+      throw new TypeError(`Command examples is not an Array of permission key strings: '${options.name}''`);
 
     // Owner only
     if (options.ownerOnly && typeof options.ownerOnly !== 'boolean') 
-      throw new TypeError('Command ownerOnly is not a boolean');
+      throw new TypeError(`Command ownerOnly is not a boolean: '${options.name}'`);
 
     // Disabled
     if (options.disabled && typeof options.disabled !== 'boolean') 
-      throw new TypeError('Command disabled is not a boolean');
+      throw new TypeError(`Command disabled is not a boolean: '${options.name}'`);
   }
 }
 
