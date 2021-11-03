@@ -44,16 +44,15 @@ module.exports = class SetAdminRoleCommand extends Command {
       let reactionRoleText = reactionRoleMessage[1].reactions.map(reactionRole => {
         const role = message.guild.roles.cache.get(reactionRole.role);
         const emoji = reactionRole.emoji.length === 2? reactionRole.emoji : message.guild.emojis.cache.get(reactionRole.emoji);
-        return `${reactionRoleIndex++} ${emoji} **|** ${role.toString()}`;
+        return `**${reactionRoleIndex++}** ${emoji}${emoji.id ? `(*${emoji.id}*)` : ''} **|** ${role.toString()}(*${role.id}*)`;
       }).join('\n');
-      reactionRoleText = `[Click to Jump to Message](https://discord.com/channels/${message.guild.id}/${channelID}/${messageID})\n` + reactionRoleText;
+      reactionRoleText = `[**Click to Jump to Message**](https://discord.com/channels/${message.guild.id}/${channelID}/${messageID}) **| ${reactionRoleMessage[1].setting ? 'Toggle' : 'Pick'}**\n` + reactionRoleText;
       fields.push(reactionRoleText);
     }
     if(fields.length === 0) {
       embed.setDescription(`None found${channel ? ` in ${channel.toString()}`: ''}`);
       return message.channel.send(embed);
     }
-    console.log(fields);
     embed.setAuthor('Click on the roles to jump to the message!');
     embed.setFooter('Expires after two minutes.\n' + message.member.displayName,  message.author.displayAvatarURL({ dynamic: true }));
     new ReactionMenu(message.client, message.channel, message.member, embed, fields, 1);

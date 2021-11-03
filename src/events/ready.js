@@ -110,6 +110,29 @@ module.exports = async (client) => {
     // Schedule crown role rotation
     client.utils.scheduleCrown(client, guild);
 
+    /** ------------------------------------------------------------------------------------------------
+     * CACHE REACTION ROLES
+     * ------------------------------------------------------------------------------------------------ */
+    // Fetch reaction roles
+    let reactionRoles = client.db.settings.selectReactionRoles.get(guild.id);
+    if (reactionRoles.reaction_roles) {
+      reactionRoles = JSON.parse(reactionRoles.reaction_roles);
+      const entries = Object.entries(reactionRoles);
+      client.logger.info(`Found ${entries.length} reaction role(s) for ${guild.name}`);
+      await entries.forEach(async reactionRole => {
+        const channelID = reactionRole[0].split('-')[1];
+        const messageID = reactionRole[0].split('-')[0];
+        const channel = guild.channels.cache.get(channelID);
+        if (channel && channel.viewable) {
+          try {
+            await channel.messages.fetch(messageID);
+          } catch (err) { // Message was deleted
+            client.logger.error(err);
+          }
+        }
+      });
+    }
+
   }
 
   // Remove left guilds

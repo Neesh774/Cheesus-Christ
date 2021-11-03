@@ -12,7 +12,8 @@ intents.add(
   'GUILDS',
   'GUILD_VOICE_STATES',
   'GUILD_MESSAGES',
-  'GUILD_MESSAGE_REACTIONS'
+  'GUILD_MESSAGE_REACTIONS',
+  'DIRECT_MESSAGE_REACTIONS',
 );
 const client = new Client(config, { ws: { intents: intents } });
 

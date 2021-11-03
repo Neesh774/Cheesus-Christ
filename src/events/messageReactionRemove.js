@@ -47,4 +47,21 @@ module.exports = async (client, messageReaction, user) => {
         await starMessage.delete().catch(err => client.logger.error(err.stack));
     }
   }
+
+  //Reaction Roles
+  if (message.guild.me.hasPermission('MANAGE_ROLES')) {
+    const reactionRoles = JSON.parse(client.db.settings.selectReactionRoles.pluck().get(message.guild.id));
+    if (!reactionRoles || !reactionRoles[`${message.id}-${message.channel.id}`]) return;
+    const reactionRole = reactionRoles[`${message.id}-${message.channel.id}`];
+    const reactions = reactionRole.reactions;
+    reactions.forEach((reactionObj) => {
+      if(emoji.name === reactionObj.emoji || emoji.id === reactionObj.emoji) {
+        const role = message.guild.roles.cache.get(reactionObj.role);
+        if(!role) return;
+        const member = message.guild.members.cache.get(user.id);
+        member.roles.remove(role);
+        member.send(`You have lost the **${role.name}** role in **${member.guild.name}**`);
+      }
+    });
+  }
 };

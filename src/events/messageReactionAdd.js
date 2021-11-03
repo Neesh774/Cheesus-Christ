@@ -3,7 +3,6 @@ const { verify } = require('../utils/emojis.json');
 const { stripIndent } = require('common-tags');
 
 module.exports = async (client, messageReaction, user) => {
-
   if (client.user === user) return;
 
   const { message, emoji } = messageReaction;
@@ -28,7 +27,6 @@ module.exports = async (client, messageReaction, user) => {
       }
     }
   }
-
   // Starboard
   if (emoji.name === '⭐' && message.author != user) {
     const starboardChannelId = client.db.settings.selectStarboardChannelId.pluck().get(message.guild.id);
@@ -96,5 +94,35 @@ module.exports = async (client, messageReaction, user) => {
         .setColor('#ffac33');
       await starboardChannel.send(`⭐ **1  |**  ${message.channel}`, embed);
     }
+  }
+  // Reaction Roles
+  if (message.guild.me.hasPermission('MANAGE_ROLES')) {
+    const reactionRoles = JSON.parse(client.db.settings.selectReactionRoles.pluck().get(message.guild.id));
+    if (!reactionRoles || !reactionRoles[`${message.id}-${message.channel.id}`]) return;
+    const reactionRole = reactionRoles[`${message.id}-${message.channel.id}`];
+    const toggle = reactionRole.setting;
+    const reactions = reactionRole.reactions;
+    reactions.forEach((reactionObj) => {
+      if(emoji.name === reactionObj.emoji || emoji.id === reactionObj.emoji) {
+        const role = message.guild.roles.cache.get(reactionObj.role);
+        const roles = reactions.map(r => r.role);
+        if(!role) return;
+        const member = message.guild.members.cache.get(user.id);
+        if(toggle) {
+          const memberRoles = member.roles.cache.first(member.roles.cache.size).map(r => r.id);
+          const overlap = memberRoles.filter(role => roles.includes(role));
+          console.log(overlap);
+          if(overlap.length > 0) {
+            message.reactions.cache.forEach(r => {
+              if(r.emoji.name != reactionObj.emoji && r.emoji.id != reactionObj.emoji) {
+                r.users.remove(user.id);
+              }
+            });
+          }
+        }
+        member.roles.add(role);
+        member.send(`You have been given the role **${role.name}** in **${role.guild.name}**.`);
+      }
+    });
   }
 };
