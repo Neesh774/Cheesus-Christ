@@ -10,4 +10,5 @@
 ## License
 
 Released under the [GNU GPL v3](https://www.gnu.org/licenses/gpl-3.0.en.html) license.
+
 Created using [Calypso](https://github.com/sabattle/CalypsoBot)
