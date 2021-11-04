@@ -60,7 +60,7 @@ module.exports = class SettingsCommand extends Command {
       for (const channel of row.cheese_ignore_channels.split(' ')) {
         cheeseIgnoreChannels.push(message.guild.channels.cache.get(channel));
       }
-      cheeseIgnoreChannels = trimArray(modChannels).join(' ');
+      cheeseIgnoreChannels = trimArray(cheeseIgnoreChannels).join(' ');
     }
     if (cheeseIgnoreChannels.length === 0) cheeseIgnoreChannels = '`None`';
     let verificationMessage = (row.verification_message) ? replaceKeywords(row.verification_message) : '`None`';

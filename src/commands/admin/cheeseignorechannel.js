@@ -17,7 +17,8 @@ module.exports = class CheeseIgnoreChannelCommand extends Command {
   }
   run(message, args) {
     const { trimArray  } = message.client.utils;
-    const cheeseIgnoreChannels = message.client.db.settings.selectCheeseIgnoreChannels.pluck().get(message.guild.id);
+    let cheeseIgnoreChannels = message.client.db.settings.selectCheeseIgnoreChannels.pluck().get(message.guild.id);
+    if(!cheeseIgnoreChannels) cheeseIgnoreChannels = '';
     let oldCheeseIgnoreChannels = [];
     if (cheeseIgnoreChannels) {
       for (const channel of cheeseIgnoreChannels.split(' ')) {
@@ -27,7 +28,7 @@ module.exports = class CheeseIgnoreChannelCommand extends Command {
     }
     if (oldCheeseIgnoreChannels.length === 0) oldCheeseIgnoreChannels = '`None`';
     const embed = new MessageEmbed()
-      .setTitle('Settings: `System`')
+      .setTitle('Settings: `Cheese`')
       
       .setDescription(`The \`cheese ignore channels\` were successfully updated. ${success}`)
       .setFooter(message.member.displayName,  message.author.displayAvatarURL({ dynamic: true }))
@@ -36,7 +37,7 @@ module.exports = class CheeseIgnoreChannelCommand extends Command {
 
     // Clear if no args provided
     if (args.length === 0) {
-      message.client.db.settings.updateModChannelIds.run(null, message.guild.id);
+      message.client.db.settings.updateCheeseIgnoreChannels.run(null, message.guild.id);
       return message.channel.send(embed.addField('Cheese Ignore Channels', `${oldCheeseIgnoreChannels} ➔ \`None\``));
     }
 
@@ -50,7 +51,7 @@ module.exports = class CheeseIgnoreChannelCommand extends Command {
     }
     channels = [...new Set(channels)];
     const channelIds = channels.map(c => c.id).join(' '); // Only keep unique IDs
-    message.client.db.settings.updateModChannelIds.run(channelIds, message.guild.id);
+    message.client.db.settings.updateCheeseIgnoreChannels.run(channelIds, message.guild.id);
     message.channel.send(embed.addField('Cheese Ignore Channels', `${oldCheeseIgnoreChannels} ➔ ${trimArray(channels).join(' ')}`));
   }
 };
