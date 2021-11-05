@@ -20,21 +20,24 @@ module.exports = class SetAdminRoleCommand extends Command {
       'Gouda': '',
       'Parmesan': '',
       'Cheddar': '',
-      'Cottage Cheese': '',
+      'Brie': '',
     };
     const embed = new MessageEmbed()
       .setTitle('Houses of Cheese')
-      .setDescription('Listed here are the members of each sacred house of cheese.')
+      .setDescription('Listed here are the members and points of each sacred house of cheese.')
       .setColor('#d7b33e');
+
+    const points = JSON.parse(message.client.db.settings.selectHousePoints.pluck().get(message.guild.id));
 
     for(let i = 0; i < Object.keys(fields).length; i++) {
       const [id, houseName] = Object.entries(houses)[i];
       const role = await message.guild.roles.fetch(id).catch(() => null);
       if (!role) return;
       const houseMembers = role.members.map(m => m.toString());
-      const fieldValue = houseMembers.join('\n');
+      let fieldValue = houseMembers.join('\n');
       fields[houseName] = fieldValue;
-      embed.addField(houseName, houseMembers === '' ? 'None' : houseMembers);
+      if(fieldValue === '') fieldValue = 'None';
+      embed.addField(`${houseName}: ${points[houseName.toLowerCase()]}`, fieldValue);
     }
     const sent = await message.channel.send(embed);
     await sent.pin();  

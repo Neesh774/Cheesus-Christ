@@ -9,6 +9,8 @@ module.exports = (client, message) => {
   const valid = new RegExp(/[sS]ort me 🧀/g);
   if (valid.test(message.content) && message.channel.id === sortingChannelId){
     return sortUser(message);
+  } else if (message.channel.id === sortingChannelId){
+    return message.delete();
   }
   // Get disabled commands
   let disabledCommands = client.db.settings.selectDisabledCommands.pluck().get(message.guild.id) || [];

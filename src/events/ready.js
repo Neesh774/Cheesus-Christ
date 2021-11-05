@@ -88,7 +88,6 @@ module.exports = async (client) => {
     for (const id of missingMemberIds) {
       if (guild.members.cache.has(id)) client.db.users.updateCurrentMember.run(1, id, guild.id);
     }
-
     /** ------------------------------------------------------------------------------------------------
      * VERIFICATION
      * ------------------------------------------------------------------------------------------------ */ 

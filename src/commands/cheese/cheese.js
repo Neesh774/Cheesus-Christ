@@ -13,7 +13,7 @@ module.exports = class CheeseCommand extends Command {
       `,
       type: client.types.CHEESE,
       clientPermissions: ['SEND_MESSAGES', 'EMBED_LINKS'],
-      examples: ['color @Neesh']
+      examples: ['cheese @Neesh']
     });
   }
   run(message, args) {

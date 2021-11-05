@@ -53,7 +53,8 @@ db.prepare(`
     crown_schedule TEXT DEFAULT "0 21 * * 5",
     cheese_rate TEXT DEFAULT 2,
     cheese_ignore_channels TEXT,
-    reaction_roles TEXT
+    reaction_roles TEXT,
+    house_points TEXT
   );
 `).run();
 
@@ -139,6 +140,9 @@ const settings = {
   selectReactionRoles: db.prepare(`
     SELECT reaction_roles FROM settings WHERE guild_id = ?;
   `),
+  selectHousePoints: db.prepare(`
+    SELECT house_points FROM settings WHERE guild_id = ?;
+  `),
 
   // Updates
   updatePrefix: db.prepare('UPDATE settings SET prefix = ? WHERE guild_id = ?;'),
@@ -178,6 +182,7 @@ const settings = {
   updateCheeseRate: db.prepare('UPDATE settings SET cheese_rate = ? WHERE guild_id = ?;'),
   updateCheeseIgnoreChannels: db.prepare('UPDATE settings SET cheese_ignore_channels = ? WHERE guild_id = ?;'),
   updateReactionRoles: db.prepare('UPDATE settings SET reaction_roles = ? WHERE guild_id = ?;'),
+  updateHousePoints: db.prepare('UPDATE settings SET house_points = ? WHERE guild_id = ?;'),
   deleteGuild: db.prepare('DELETE FROM settings WHERE guild_id = ?;')
 };
 
