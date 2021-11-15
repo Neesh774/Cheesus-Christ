@@ -19,6 +19,7 @@ module.exports = class SetAdminRoleCommand extends Command {
   }
   async run(message, args) {
     let reactionRoles = JSON.parse(message.client.db.settings.selectReactionRoles.pluck().get(message.guild.id));
+    if(!reactionRoles) reactionRoles = {};
     const [channelID, messageID, roleID, emoji, setting] = args;
     if (!messageID) return this.sendErrorMessage(message, 0, 'Please provide a message ID.');
     if (!channelID) return this.sendErrorMessage(message, 0, 'Please provide a channel mention or ID.');
@@ -35,9 +36,9 @@ module.exports = class SetAdminRoleCommand extends Command {
     if (!msg) return this.sendErrorMessage(message, 0, 'Please provide a valid message ID.');
 
     const emojiID = emoji.startsWith('<') ? emoji.match(/\d+/g).join('') : emoji;
-    const emojiObj = emojiID.length === 2? emojiID : await message.guild.emojis.cache.get(emojiID);
+    const emojiObj = emojiID.length < 15? emojiID : await message.guild.emojis.cache.get(emojiID);
     if (!emojiObj) return this.sendErrorMessage(message, 0, 'Please provide a valid emoji.');
-    const emojiToString = emojiObj.length === 2? emojiObj : emojiObj.toString();
+    const emojiToString = emojiObj.length < 15? emojiObj : emojiObj.toString();
 
     const toggle = setting.toLowerCase() === 'toggle';
     const embed = new MessageEmbed()

@@ -76,8 +76,9 @@ module.exports = (client, message) => {
   // Update points with messagePoints value
   if (pointTracking) client.db.users.updatePoints.run({ points: messagePoints }, message.author.id, message.guild.id);
 
-  const cheeseRate = parseInt(client.db.settings.selectCheeseRate.get(message.guild.id).cheese_rate) / 50;
-  const sendPick = Math.random() < cheeseRate && !client.picking;
+  const cheeseRate = parseInt(client.db.settings.selectCheeseRate.pluck().get(message.guild.id)) / 40;
+  const cheeseIgnoreChannels = client.db.settings.selectCheeseIgnoreChannels.pluck().get(message.guild.id).split(' ');
+  const sendPick = Math.random() < cheeseRate && !client.picking && !cheeseIgnoreChannels.includes(message.channel.id);
   if(sendPick) pickCheese(message, client);
 };
 

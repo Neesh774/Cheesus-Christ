@@ -43,7 +43,7 @@ module.exports = class SetAdminRoleCommand extends Command {
       const messageID = reactionRoleMessage[0].split('-')[0];
       let reactionRoleText = reactionRoleMessage[1].reactions.map(reactionRole => {
         const role = message.guild.roles.cache.get(reactionRole.role);
-        const emoji = reactionRole.emoji.length === 2? reactionRole.emoji : message.guild.emojis.cache.get(reactionRole.emoji);
+        const emoji = reactionRole.emoji.length < 10? reactionRole.emoji : message.guild.emojis.cache.get(reactionRole.emoji);
         return `**${reactionRoleIndex++}** ${emoji}${emoji.id ? `(*${emoji.id}*)` : ''} **|** ${role.toString()}(*${role.id}*)`;
       }).join('\n');
       reactionRoleText = `[**Click to Jump to Message**](https://discord.com/channels/${message.guild.id}/${channelID}/${messageID}) **| ${reactionRoleMessage[1].setting ? 'Toggle' : 'Pick'}**\n` + reactionRoleText;

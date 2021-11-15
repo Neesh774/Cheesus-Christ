@@ -111,7 +111,6 @@ module.exports = async (client, messageReaction, user) => {
         if(toggle) {
           const memberRoles = member.roles.cache.first(member.roles.cache.size).map(r => r.id);
           const overlap = memberRoles.filter(role => roles.includes(role));
-          console.log(overlap);
           if(overlap.length > 0) {
             message.reactions.cache.forEach(r => {
               if(r.emoji.name != reactionObj.emoji && r.emoji.id != reactionObj.emoji) {
